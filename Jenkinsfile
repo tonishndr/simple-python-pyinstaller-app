@@ -24,8 +24,9 @@ node {
         // Check out the source code from Git
         checkout scm
         
-        // Build the executable using pyinstaller in a cdrx/pyinstaller-linux:python2 Docker container
-        withDockerContainer(image: 'cdrx/pyinstaller-linux:python2') {
+        // Run Deliver stage using a cdrx/pyinstaller-linux:python2 Docker container
+        def deliverContainer = docker.image('cdrx/pyinstaller-linux:python2').inside("--user=root") {
+            checkout scm
             sh 'pyinstaller --onefile sources/add2vals.py'
             archiveArtifacts artifacts: 'dist/add2vals'
         }
