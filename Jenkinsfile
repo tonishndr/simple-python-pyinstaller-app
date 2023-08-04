@@ -24,11 +24,6 @@ node {
         // Check out the source code from Git
         checkout scm
 
-        // sh 'docker run --rm -v /var/jenkins_home/workspace/submission-cicd-pipeline-tonishnr/sources:/src cdrx/pyinstaller-linux:python2 \'pyinstaller -F add2vals.py\''
-        // archiveArtifacts artifacts: 'sources/add2vals.py', followSymlinks: false
-        // sh 'docker run --rm -v /var/jenkins_home/workspace/submission-cicd-pipeline-tonishndr/sources:/src cdrx/pyinstaller-linux:python2 \'rm -rf build dist\''
-        // sleep time: 1, unit: 'MINUTES'
-
         // Run Deliver stage using a cdrx/pyinstaller-linux:python2 Docker container
         def deliverContainer = docker.image('python:3').inside("--user=root") {
         checkout scm
