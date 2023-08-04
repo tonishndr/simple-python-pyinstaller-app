@@ -26,9 +26,10 @@ node {
         
         // Run Deliver stage using a cdrx/pyinstaller-linux:python2 Docker container
         def deliverContainer = docker.image('cdrx/pyinstaller-linux:python2').inside("--user=root") {
-            checkout scm
-            sh 'pyinstaller --onefile sources/add2vals.py'
-            archiveArtifacts artifacts: 'dist/add2vals'
+        checkout scm
+        sh 'pip install pyinstaller'  // Install pyinstaller
+        sh 'pyinstaller --onefile sources/add2vals.py'
+        archiveArtifacts artifacts: 'dist/add2vals'
         }
     }
 }
