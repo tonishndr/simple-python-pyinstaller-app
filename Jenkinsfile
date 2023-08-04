@@ -30,7 +30,7 @@ node {
         // sleep time: 1, unit: 'MINUTES'
 
         // Run Deliver stage using a cdrx/pyinstaller-linux:python2 Docker container
-        def deliverContainer = docker.image('python:2-alpine').inside("--user=root") {
+        def deliverContainer = docker.image('python:3').inside("--user=root") {
         checkout scm
         sh 'pip install pyinstaller'  // Install pyinstaller
         sh 'pyinstaller --onefile sources/add2vals.py'
