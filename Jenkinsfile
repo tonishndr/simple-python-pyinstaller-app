@@ -20,9 +20,7 @@ pipeline {
         stage('Build') {
             steps {
                 script {
-                    // Build stage using a Python 2 Docker container
-                    docker.image('python:2-alpine').inside {
-                        sh 'python -m py_compile sources/add2vals.py sources/calc.py'
+                    def dockerImage = docker.build('my-docker-image', '.')
                     }
                 }
             }
