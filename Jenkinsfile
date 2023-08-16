@@ -26,8 +26,8 @@ node {
 
     stage('Deploy') {
         // Langkah deploy menggunakan render CLI
-        withCredentials([string(credentialsId: 'rnd_3Si1GOZ4UE7LTssNp5i37oK710qy', variable: 'RENDER_TOKEN')]) {
-            sh 'render deploy --token $RENDER_TOKEN'
+        withCredentials([string(credentialsId: 'render-api-token', variable: 'RENDER_TOKEN')]) {
+            sh 'render deploy --token rnd_3Si1GOZ4UE7LTssNp5i37oK710qy'
         }
     }
     
