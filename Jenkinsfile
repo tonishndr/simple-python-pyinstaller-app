@@ -1,11 +1,6 @@
 node {
     def renderToken = 'rnd_gZYFOScAftJVbFZsOlXjQINqYM5l'
     
-    stage('Install Docker') {
-        // Install Docker inside the Jenkins container
-        sh 'apk add docker'
-    }
-    
     stage('Build') {
         // Check out the source code from Git
         checkout scm
