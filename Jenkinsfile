@@ -40,7 +40,6 @@ node {
             sh 'mkdir -p ~/.ssh'
             sh 'echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa'
             sh 'chmod 600 ~/.ssh/id_rsa'
-            sh 'docker push my-docker-image'  // Push the Docker image to Render
             sh 'render up --name my-app --path sources --docker my-docker-image'  // Deploy the app
         }
     }
