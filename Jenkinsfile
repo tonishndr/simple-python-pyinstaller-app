@@ -1,6 +1,6 @@
 node {
     def renderToken = 'rnd_gZYFOScAftJVbFZsOlXjQINqYM5l'
-
+    
     stage('Build') {
         // Check out the source code from Git
         checkout scm
@@ -26,13 +26,19 @@ node {
         input message: 'Lanjutkan ke tahap Deploy'
     }
     
-    stage('Deploy to Render') {
-        def renderCli = docker.image('render/vercel:latest')
-        
-        renderCli.inside {
-            sh "render login $renderToken"
-            sh 'render up --name my-app --path sources --docker'
-            sh 'sleep 60'
+    stage('Deploy') {
+        // Check out the source code from Git
+        checkout scm
+
+        // Run Deliver stage using a cdrx/pyinstaller-linux:python2 Docker container
+        def deliverContainer = docker.image('python:3').inside("--user=root") {
+        checkout scm
+        sh 'pip install pyinstaller'  // Install pyinstaller
+        sh 'pyinstaller --onefile sources/add2vals.py'
+        archiveArtifacts artifacts: 'dist/add2vals', followSymlinks: false
+        sh 'sleep 60'
+        sh "render login $renderToken"  // Login to Render using your token
+        sh 'render up --name my-app --path sources --docker'  // Deploy the app
         }
     }
 }
