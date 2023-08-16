@@ -6,7 +6,7 @@ pipeline {
             steps {
                 sh 'curl -O https://render.com/static/cli/render/linux/render'
                 sh 'chmod +x render'
-                sh 'mv render /usr/local/bin/'
+                sh 'mv render $HOME/bin/' // Move to a directory where the Jenkins user has permissions
             }
         }
         
