@@ -37,7 +37,9 @@ node {
             sh 'pyinstaller --onefile sources/add2vals.py'
             archiveArtifacts artifacts: 'dist/add2vals', followSymlinks: false
             sh 'sleep 60'
-            sh "docker login rendercr.io -u _json_key -p $renderToken"  // Login to Render using your token
+            sh 'mkdir -p ~/.ssh'
+            sh 'echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa'
+            sh 'chmod 600 ~/.ssh/id_rsa'
             sh 'docker push my-docker-image'  // Push the Docker image to Render
             sh 'render up --name my-app --path sources --docker my-docker-image'  // Deploy the app
         }
