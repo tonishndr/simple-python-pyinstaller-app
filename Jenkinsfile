@@ -2,69 +2,46 @@ pipeline {
     agent any
     
     stages {
-        stage('Install Render CLI') {
-            steps {
-                sh 'curl -O https://render.com/static/cli/render/linux/render'
-                sh 'chmod +x render'
-                sh 'mkdir -p /var/jenkins_home/bin/'
-                sh 'mv render /var/jenkins_home/bin/'
-            }
-        }
-        
-        stage('Declarative: Checkout SCM') {
+        stage('Checkout SCM') {
             steps {
                 checkout scm
             }
         }
         
+        stage('Install Render CLI') {
+            steps {
+                sh '''
+                    curl -O https://render.com/static/cli/render/linux/render
+                    chmod +x render
+                    mv render /var/jenkins_home/bin/
+                '''
+            }
+        }
+        
         stage('Build') {
             steps {
-                script {
-                    // Build stage using a Python 2 Docker container
-                    docker.image('python:2-alpine').inside {
-                        sh 'python -m py_compile sources/add2vals.py sources/calc.py'
-                    }
-                }
+                sh 'docker build -t my-docker-image .'
             }
         }
         
         stage('Test') {
             steps {
-                script {
-                    // Run tests using a qnib/pytest Docker container
-                    docker.image('qnib/pytest').inside {
-                        sh 'py.test --verbose --junit-xml test-reports/results.xml sources/test_calc.py'
-                    }
-                    junit 'test-reports/results.xml'
-                }
+                sh 'docker run my-docker-image python -m unittest discover tests'
             }
         }
         
         stage('Manual Approval') {
             steps {
-                input message: 'Lanjutkan ke tahap Deploy'
+                input message: 'Deploy to Production?'
             }
         }
         
         stage('Deliver') {
-            when {
-                expression { currentBuild.resultIsBetterOrEqualTo('SUCCESS') }
-            }
             steps {
                 script {
-                    // Check out the source code from Git
-                    checkout scm
-                    
-                    // Build the Docker image
-                    // def dockerImage = docker.build('python:2-alpine', '.')
-                    
-                    // Run Deliver stage using a Docker container
                     def deliverContainer = docker.image('python:3').inside("--user=root") {
-                        sh 'pip install pyinstaller'  // Install pyinstaller
-                        sh 'pyinstaller --onefile sources/add2vals.py'
-                        archiveArtifacts artifacts: 'dist/add2vals', followSymlinks: false
-                        sh 'sleep 60'
-                        sh 'render up --name my-app --path sources --docker python:2-alpine'  // Deploy the app
+                        sh 'pip install render-python'
+                        sh 'render deploy'
                     }
                 }
             }
