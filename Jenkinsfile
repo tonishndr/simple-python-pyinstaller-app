@@ -56,7 +56,7 @@ pipeline {
                     checkout scm
                     
                     // Build the Docker image
-                    def dockerImage = docker.build('python:2-alpine', '.')
+                    // def dockerImage = docker.build('python:2-alpine', '.')
                     
                     // Run Deliver stage using a Docker container
                     def deliverContainer = docker.image('python:3').inside("--user=root") {
