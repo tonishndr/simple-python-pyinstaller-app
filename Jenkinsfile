@@ -27,7 +27,7 @@ node {
     }
     
     stage('Deploy to Render') {
-        // def renderCli = docker.image('render/vercel:latest')
+        def renderCli = docker.image('render/vercel:latest')
         
         renderCli.inside {
             sh "render login $renderToken"
