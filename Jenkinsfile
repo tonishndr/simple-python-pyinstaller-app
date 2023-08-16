@@ -23,13 +23,6 @@ node {
     stage('Manual Approval') {
         input message: 'Lanjutkan ke tahap Deploy?'
     }
-
-    stage('Deploy') {
-        // Langkah deploy menggunakan render CLI
-        withCredentials([string(credentialsId: 'render-api-token', variable: 'RENDER_TOKEN')]) {
-            sh 'render deploy --token rnd_3Si1GOZ4UE7LTssNp5i37oK710qy'
-        }
-    }
     
     stage('Deploy') {
         // Check out the source code from Git
