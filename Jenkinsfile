@@ -1,6 +1,14 @@
 node {
     def renderToken = 'rnd_gZYFOScAftJVbFZsOlXjQINqYM5l'
     
+    stage('Install Render CLI') {
+    steps {
+        sh 'curl -O https://render.com/static/cli/render/linux/render'
+        sh 'chmod +x render'
+        sh 'mv render /usr/local/bin/'
+        }
+    }
+
     stage('Build') {
         // Check out the source code from Git
         checkout scm
