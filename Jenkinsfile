@@ -19,8 +19,12 @@ node {
             junit 'test-reports/results.xml'
         }
     }
+
+    stage('Manual Approval') {
+        input message: 'Proceed to the deployment stage ?'
+    }
     
-    stage('Deliver') {
+    stage('Deploy') {
         // Check out the source code from Git
         checkout scm
 
@@ -30,6 +34,7 @@ node {
         sh 'pip install pyinstaller'  // Install pyinstaller
         sh 'pyinstaller --onefile sources/add2vals.py'
         archiveArtifacts artifacts: 'dist/add2vals', followSymlinks: false
+        sh 'sleep 60'
         }
     }
 }
