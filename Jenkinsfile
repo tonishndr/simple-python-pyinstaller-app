@@ -20,7 +20,9 @@ pipeline {
         stage('Build') {
             steps {
                 script {
-                    def dockerImage = docker.build('my-docker-image', '.')
+                    // Build stage using a Python 2 Docker container
+                    docker.image('python:2-alpine').inside {
+                        sh 'python -m py_compile sources/add2vals.py sources/calc.py'
                     }
                 }
             }
@@ -62,7 +64,7 @@ pipeline {
                         sh 'pyinstaller --onefile sources/add2vals.py'
                         archiveArtifacts artifacts: 'dist/add2vals', followSymlinks: false
                         sh 'sleep 60'
-                        sh 'render up --name my-app --path sources --docker my-docker-image'  // Deploy the app
+                        sh 'render up --name my-app --path sources --docker python:2-alpine'  // Deploy the app
                     }
                 }
             }
